@@ -1,6 +1,7 @@
 import { groq } from '@ai-sdk/groq';
 import { streamText, convertToModelMessages } from 'ai';
 import { SYSTEM_PROMPT } from '@/lib/system-prompt';
+import { LESSON_CONTENT } from '@/lib/grade11-lesson2';
 
 // Use Vercel Edge Runtime for low-latency streaming
 export const runtime = 'edge';
@@ -33,9 +34,12 @@ export async function POST(req: Request) {
         };
       });
 
+    // Inject the exact lesson content into the system prompt
+    const finalSystemPrompt = SYSTEM_PROMPT.replace('{LESSON_CONTENT}', LESSON_CONTENT);
+
     const result = await streamText({
       model: groq('llama-3.3-70b-versatile'),
-      system: SYSTEM_PROMPT,
+      system: finalSystemPrompt,
       messages: coreMessages,
     });
 
