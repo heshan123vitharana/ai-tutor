@@ -5,6 +5,7 @@ import ReactMarkdown from 'react-markdown';
 import rehypeHighlight from 'rehype-highlight';
 import { Check, Copy } from 'lucide-react';
 import type { UIMessage } from 'ai';
+import MermaidChart from './MermaidChart';
 
 interface MessageBubbleProps {
   message: UIMessage;
@@ -85,6 +86,12 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
                 // Custom code block renderer with copy button
                 code({ className, children, ...props }) {
                   const isBlock = className?.startsWith('language-');
+                  const isMermaid = className === 'language-mermaid';
+                  
+                  if (isMermaid) {
+                    return <MermaidChart chart={String(children)} />;
+                  }
+
                   if (isBlock) {
                     return (
                       <CodeBlock className={className}>
