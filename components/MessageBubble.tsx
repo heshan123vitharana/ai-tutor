@@ -85,20 +85,29 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
               components={{
                 // Custom code block renderer with copy button
                 code({ className, children, ...props }) {
-                  const isBlock = className?.startsWith('language-');
-                  const isMermaid = className === 'language-mermaid';
+                  const match = /language-(\w+)/.exec(className || '');
+                  const lang = match ? match[1].toLowerCase() : '';
+                  const contentStr = String(children).trim();
+                  
+                  // Auto-detect mermaid if the model forgot the language tag
+                  const isMermaid = lang === 'mermaid' || 
+                                    (!lang && (contentStr.startsWith('graph ') || contentStr.startsWith('flowchart ') || contentStr.startsWith('sequenceDiagram') || contentStr.startsWith('pie') || contentStr.startsWith('stateDiagram') || contentStr.startsWith('classDiagram')));
                   
                   if (isMermaid) {
-                    return <MermaidChart chart={String(children)} />;
+                    return <MermaidChart chart={contentStr} />;
                   }
+
+                  // It's a block if it has a language or contains newlines
+                  const isBlock = !!match || contentStr.includes('\n');
 
                   if (isBlock) {
                     return (
-                      <CodeBlock className={className}>
+                      <CodeBlock className={className || 'language-text'}>
                         {String(children).replace(/\n$/, '')}
                       </CodeBlock>
                     );
                   }
+
                   return <code className={className} {...props}>{children}</code>;
                 },
                 // Open links in new tab
