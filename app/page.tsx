@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import Chat from '@/components/Chat';
 import Sidebar from '@/components/Sidebar';
 import { ChatSession, getSessions, saveSessions, generateSessionId, generateTitle } from '@/lib/storage';
-import { Message } from '@ai-sdk/react';
+import { type UIMessage as Message } from 'ai';
 
 export default function Home() {
   const [sessions, setSessions] = useState<ChatSession[]>([]);

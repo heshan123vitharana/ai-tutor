@@ -1,4 +1,4 @@
-import { Message } from 'ai';
+import { type UIMessage as Message } from 'ai';
 
 export interface ChatSession {
   id: string;
@@ -38,7 +38,10 @@ export function generateTitle(messages: Message[]): string {
   const firstUserMessage = messages.find(m => m.role === 'user');
   if (!firstUserMessage) return 'New Chat';
   
-  const text = firstUserMessage.content || 'New Chat';
-  // Return the first 30 characters
-  return text.length > 30 ? text.substring(0, 30) + '...' : text;
+  // Extract text from parts array or fallback to content string
+  const textContent = firstUserMessage.parts
+    ? firstUserMessage.parts.filter(p => p.type === 'text').map((p: any) => p.text).join('')
+    : (firstUserMessage as any).content || 'New Chat';
+  
+  return textContent.length > 30 ? textContent.substring(0, 30) + '...' : textContent;
 }

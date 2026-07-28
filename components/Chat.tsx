@@ -1,6 +1,7 @@
 'use client';
 
-import { useChat, Message } from '@ai-sdk/react';
+import { useChat } from '@ai-sdk/react';
+import { type UIMessage as Message } from 'ai';
 import { AlertTriangle } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import Header from './Header';
@@ -15,19 +16,22 @@ interface ChatProps {
 }
 
 export default function Chat({ id, initialMessages = [], onMessagesChange, onToggleSidebar }: ChatProps) {
-  const {
-    messages,
-    status,
-    error,
-    sendMessage,
-    setMessages,
-  } = useChat({
+  const { messages, status, error, sendMessage, setMessages } = useChat({
     id,
-    initialMessages,
-  });
+    initialMessages, // in v4 it's initialMessages on the react hook
+    api: '/api/chat',
+  } as any);
 
   const [input, setInput] = useState('');
   const isLoading = status === 'submitted' || status === 'streaming';
+
+  // Force load initial messages if useChat's internal cache ignored them
+  useEffect(() => {
+    if (initialMessages.length > 0 && messages.length === 0) {
+      setMessages(initialMessages);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialMessages, id]);
 
   const lastSavedMessagesRef = useRef<Message[]>([]);
 
@@ -35,11 +39,15 @@ export default function Chat({ id, initialMessages = [], onMessagesChange, onTog
   useEffect(() => {
     if (!onMessagesChange || messages.length === 0) return;
     
-    // Only save if the length changed, or the content of the last message changed (e.g. streaming)
+    // Only save if the length changed, or the parts changed (e.g. streaming)
     const lastSaved = lastSavedMessagesRef.current;
+    
+    // Helper to safely get stringified parts
+    const getPartsStr = (m?: Message) => JSON.stringify(m?.parts || (m as any)?.content || '');
+    
     const isDifferent = 
       messages.length !== lastSaved.length || 
-      messages[messages.length - 1]?.content !== lastSaved[lastSaved.length - 1]?.content;
+      getPartsStr(messages[messages.length - 1]) !== getPartsStr(lastSaved[lastSaved.length - 1]);
 
     if (isDifferent) {
       lastSavedMessagesRef.current = messages;
@@ -57,12 +65,12 @@ export default function Chat({ id, initialMessages = [], onMessagesChange, onTog
   const handleSubmit = (e?: React.FormEvent) => {
     e?.preventDefault();
     if (!input.trim() || isLoading) return;
-    sendMessage({ content: input, role: 'user' } as any);
+    sendMessage({ role: 'user', parts: [{ type: 'text', text: input }] } as any);
     setInput('');
   };
 
   const handleStarterClick = (text: string) => {
-    sendMessage({ content: text, role: 'user' } as any);
+    sendMessage({ role: 'user', parts: [{ type: 'text', text }] } as any);
   };
 
   return (
