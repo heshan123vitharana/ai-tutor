@@ -12,11 +12,16 @@ export async function POST(req: Request) {
     if (!messages || !Array.isArray(messages)) {
       return new Response('Invalid request: messages array required', { status: 400 });
     }
+    
+    const coreMessages = messages.map((msg: any) => ({
+      role: msg.role,
+      content: msg.content
+    }));
 
     const result = await streamText({
       model: groq('llama-3.3-70b-versatile'),
       system: SYSTEM_PROMPT,
-      messages,
+      messages: coreMessages,
     });
 
     const anyResult = result as any;
@@ -41,7 +46,7 @@ export async function POST(req: Request) {
     }
 
     return new Response(
-      JSON.stringify({ error: 'Something went wrong. Please try again.' }),
+      JSON.stringify({ error: error instanceof Error ? error.message : String(error) }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }
