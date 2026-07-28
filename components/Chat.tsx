@@ -1,7 +1,8 @@
 'use client';
 
-import { useChat } from 'ai/react';
+import { useChat } from '@ai-sdk/react';
 import { AlertTriangle } from 'lucide-react';
+import { useState } from 'react';
 import Header from './Header';
 import MessageList from './MessageList';
 import ChatInput from './ChatInput';
@@ -9,27 +10,29 @@ import ChatInput from './ChatInput';
 export default function Chat() {
   const {
     messages,
-    input,
-    isLoading,
+    status,
     error,
-    handleInputChange,
-    handleSubmit,
+    sendMessage,
     setMessages,
-    setInput,
-  } = useChat({
-    api: '/api/chat',
-  });
+  } = useChat();
+
+  const [input, setInput] = useState('');
+  const isLoading = status === 'submitted' || status === 'streaming';
 
   const handleClear = () => setMessages([]);
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => setInput(e.target.value);
+
+  const handleSubmit = (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (!input.trim() || isLoading) return;
+    sendMessage({ content: input, role: 'user' } as any);
+    setInput('');
+  };
+
   // Allow starter prompts to populate input and submit
   const handleStarterClick = (text: string) => {
-    setInput(text);
-    // Submit on next tick so input is updated
-    setTimeout(() => {
-      const form = document.querySelector('form');
-      form?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
-    }, 50);
+    sendMessage({ content: text, role: 'user' } as any);
   };
 
   return (

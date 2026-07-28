@@ -4,10 +4,10 @@ import { useState, useCallback } from 'react';
 import ReactMarkdown from 'react-markdown';
 import rehypeHighlight from 'rehype-highlight';
 import { Check, Copy } from 'lucide-react';
-import type { Message } from 'ai';
+import type { UIMessage } from 'ai';
 
 interface MessageBubbleProps {
-  message: Message;
+  message: UIMessage;
 }
 
 // Code block with copy button
@@ -48,6 +48,11 @@ function CodeBlock({ children, className }: { children: string; className?: stri
 
 export default function MessageBubble({ message }: MessageBubbleProps) {
   const isUser = message.role === 'user';
+  
+  // Extract text from parts array or fallback to content string
+  const textContent = message.parts
+    ? message.parts.filter(p => p.type === 'text').map(p => (p as any).text).join('')
+    : (message as any).content || '';
 
   return (
     <div className={`message-row ${isUser ? 'user' : 'assistant'}`}>
@@ -70,7 +75,7 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
       <div className={`message-bubble ${isUser ? 'user' : 'assistant'}`}>
         {isUser ? (
           // User messages: plain text, preserve newlines
-          <span style={{ whiteSpace: 'pre-wrap' }}>{message.content as string}</span>
+          <span style={{ whiteSpace: 'pre-wrap' }}>{textContent}</span>
         ) : (
           // Assistant messages: render markdown
           <div className="markdown-content">
@@ -99,7 +104,7 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
                 },
               }}
             >
-              {message.content as string}
+              {textContent}
             </ReactMarkdown>
           </div>
         )}

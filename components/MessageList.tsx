@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import type { Message } from 'ai';
+import type { UIMessage } from 'ai';
 import MessageBubble from './MessageBubble';
 import TypingIndicator from './TypingIndicator';
 
@@ -13,7 +13,7 @@ const STARTER_PROMPTS = [
 ];
 
 interface MessageListProps {
-  messages: Message[];
+  messages: UIMessage[];
   isLoading: boolean;
   onStarterClick: (text: string) => void;
 }

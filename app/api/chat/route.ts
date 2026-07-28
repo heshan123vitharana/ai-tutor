@@ -17,11 +17,10 @@ export async function POST(req: Request) {
       model: groq('llama-3.3-70b-versatile'),
       system: SYSTEM_PROMPT,
       messages,
-      maxTokens: 1024,
-      temperature: 0.7,
     });
 
-    return result.toDataStreamResponse();
+    const anyResult = result as any;
+    return anyResult.toDataStreamResponse ? anyResult.toDataStreamResponse() : anyResult.toTextStreamResponse();
   } catch (error: unknown) {
     console.error('[/api/chat] Error:', error);
 
