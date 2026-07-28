@@ -641,9 +641,71 @@ body {
 
 /* ─── Responsive ─────────────────────────────────────────────── */
 @media (max-width: 640px) {
-  .message-list    { padding: var(--space-4); }
-  .input-area      { padding: var(--space-3) var(--space-4); }
-  .header          { padding: var(--space-3) var(--space-4); }
-  .starter-grid    { grid-template-columns: 1fr; }
-  .header-subtitle { display: none; }
+  .message-list { 
+    padding: var(--space-3); 
+    gap: var(--space-3); 
+  }
+  
+  .input-area { 
+    padding: var(--space-2) var(--space-3) calc(var(--space-2) + env(safe-area-inset-bottom)); 
+  }
+  
+  .header { 
+    padding: var(--space-3); 
+  }
+  
+  .starter-grid { 
+    grid-template-columns: 1fr; 
+  }
+  
+  .header-subtitle { 
+    display: none; 
+  }
+  
+  .empty-state { 
+    padding: var(--space-4); 
+    gap: var(--space-4); 
+  }
+  
+  .empty-title { 
+    font-size: var(--text-xl); 
+  }
+  
+  .empty-subtitle { 
+    font-size: var(--text-sm); 
+  }
+  
+  .empty-avatar { 
+    width: 56px; 
+    height: 56px; 
+  }
+  
+  .message-bubble { 
+    padding: var(--space-2) var(--space-3);
+    font-size: 15px; 
+    max-width: calc(100% - 36px);
+  }
+  
+  .message-avatar {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+  
+  .message-row { 
+    gap: var(--space-2); 
+  }
+  
+  .chat-textarea { 
+    font-size: 16px; /* Prevents iOS auto-zoom on focus */
+  }
+  
+  .error-message {
+    margin: 0 var(--space-3) var(--space-3);
+  }
+
+  .markdown-content pre {
+    padding: var(--space-3) !important;
+    font-size: 13px !important;
+  }
 }
