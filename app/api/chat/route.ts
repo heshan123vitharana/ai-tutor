@@ -1,5 +1,5 @@
 import { groq } from '@ai-sdk/groq';
-import { streamText } from 'ai';
+import { streamText, convertToModelMessages } from 'ai';
 import { SYSTEM_PROMPT } from '@/lib/system-prompt';
 
 // Use Vercel Edge Runtime for low-latency streaming
@@ -13,10 +13,7 @@ export async function POST(req: Request) {
       return new Response('Invalid request: messages array required', { status: 400 });
     }
     
-    const coreMessages = messages.map((msg: any) => ({
-      role: msg.role,
-      content: msg.content
-    }));
+    const coreMessages = await convertToModelMessages(messages as any);
 
     const result = await streamText({
       model: groq('llama-3.3-70b-versatile'),
