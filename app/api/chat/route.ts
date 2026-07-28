@@ -20,7 +20,7 @@ export async function POST(req: Request) {
     });
 
     const anyResult = result as any;
-    return anyResult.toDataStreamResponse ? anyResult.toDataStreamResponse() : anyResult.toTextStreamResponse();
+    return anyResult.toDataStreamResponse ? anyResult.toDataStreamResponse() : (anyResult.toUIMessageStreamResponse ? anyResult.toUIMessageStreamResponse() : anyResult.toTextStreamResponse());
   } catch (error: unknown) {
     console.error('[/api/chat] Error:', error);
 
