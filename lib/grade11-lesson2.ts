@@ -64,7 +64,14 @@ Methods of gathering information:
 - Prototyping (E.g. A display of screenshots, records, samples)
 
 2. Designing the solution
-Actual design of the proposed system takes place. Includes identification of software/architecture, user interface, hardware, dependency of sub-systems, planning of tests.
+Actual design of the proposed system takes place. Activities related to the design process are:
+1. Identification of software and software architecture
+2. User interface - what the user sees on the screen and preparation for data storage
+3. Identification of main hardware systems and its components
+4. Identification of dependency of each sub-system
+5. Deciding on the required hardware and software to run the system
+6. Designing infrastructure for software, databases, user interfaces
+7. Planning of tests
 
 3. Coding of the solution
 The main objective is coding of the proposed system, using a suitable computer language. Well-written code makes it easy to read and understand and reduces maintenance cost.
@@ -101,4 +108,17 @@ Consists of several stages of linear development.
 
 Iterative Incremental Model:
 A system is developed through repeated cycles (Iterative) and in smaller portions at a time (incremental). Allows software developers to take advantage of what was learned during development.
+
+Activity: Compare and contrast the Waterfall model with iterative incremental model.
+
+Summary of the Chapter:
+- A system is the collection of different components that usually interconnected towards a common objective.
+- Any system consists of three basic components namely input, process and output.
+- Information systems transform data into information.
+- Information systems can be divided into Manual Information Systems and Computer based Information Systems.
+- Manual Information Systems does not use computers and performs tasks using human.
+- Computer based Information Systems use a computer to transform data into information.
+- A system can be developed or an existing system can be made more efficient by using the system development life cycle.
+- The system development life cycle consists of the following: 1. Identification of Requirements 2. Designing Solution 3. Coding of Solution 4. Testing and Debugging 5. Deployment of System 6. Maintenance of System
+- The waterfall life cycle model and iterative incremental models are examples for system development life cycles.
 `;
