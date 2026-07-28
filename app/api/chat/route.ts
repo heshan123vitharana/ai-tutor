@@ -13,7 +13,25 @@ export async function POST(req: Request) {
       return new Response('Invalid request: messages array required', { status: 400 });
     }
     
-    const coreMessages = await convertToModelMessages(messages as any);
+    // Robust mapping from UIMessage to CoreMessage
+    const coreMessages = messages
+      .filter((msg: any) => msg.role === 'user' || msg.role === 'assistant' || msg.role === 'system')
+      .map((msg: any) => {
+        let textContent = msg.content || '';
+        
+        // Handle cases where the UI or tests send 'parts' instead of 'content'
+        if (!textContent && msg.parts && Array.isArray(msg.parts)) {
+          textContent = msg.parts
+            .filter((p: any) => p.type === 'text')
+            .map((p: any) => p.text)
+            .join('');
+        }
+
+        return {
+          role: msg.role,
+          content: textContent
+        };
+      });
 
     const result = await streamText({
       model: groq('llama-3.3-70b-versatile'),
